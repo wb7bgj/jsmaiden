@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>JSmaiden Web UI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+	<meta name="keywords" content="HTML, CSS, JavaScript">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<!-- This demo application requires w3.css framework file     -->
+	<link rel="stylesheet" href="w3.css">
+  </head>
+  <body>
+  	<!-- -------------------------------------------------------- -->
+    <!-- Required JavaScript files                                -->
+    <script type="text/javascript" src="JSmaiden.js"></script>
+    <script type="text/javascript" src="gridtables.js"></script>
+    
+	<!-- -------------------------------------------------------- -->
+    <!-- Main Header for Application                              -->
+    <div class="w3-container">
+    	<div class="w3-text-blue">
+          <h1>Maidenhead Grid Locator Utility</h1>
+    	</div>
+    </div>
+    
+	<!-- -------------------------------------------------------- -->
+    <!-- Horizontal Tabbed Menu Bar -->
+    <div class="w3-bar w3-blue">
+      <button class="w3-bar-item w3-button w3-round-large w3-hover-blue-grey w3-blue" id="Button-0" onclick="openTab('grid_ID_from_latlon', this.id)">Grid ID from Lat/Lon</button>
+      <button class="w3-bar-item w3-button w3-round-large w3-hover-blue-grey w3-blue" id="Button-1" onclick="openTab('distance_and_azimuth_lat_lon', this.id)">Distance and Azimuth (Lat/Lon)</button>
+      <button class="w3-bar-item w3-button w3-round-large w3-hover-blue-grey w3-blue" id="Button-2" onclick="openTab('distance_and_azimuth_grid_ID', this.id)">Distance and Azimuth (Grid ID)</button>
+      <button class="w3-bar-item w3-button w3-round-large w3-hover-blue-grey w3-blue" id="Button-3" onclick="openTab('grid_size', this.id)">Grid ID Size</button>
+      <button class="w3-bar-item w3-button w3-round-large w3-hover-blue-grey w3-blue" id="Button-4" onclick="openTab('grid_boundary', this.id)">Grid ID Boundary</button>
+    </div>
+    
+	<!-- -------------------------------------------------------- -->
+    <!-- The openTab function sets which page div as visible and  -->
+	<!-- the color of the active tab                              -->
+    <script>
+      function openTab(tabName, btnID) {
+         
+        // Loop counter variable
+        let i;
+
+        // List of the <div>s used for making each page 
+		let divClassInfo = document.getElementsByClassName("tab");
+  
+        // This loop through Class information for each page w3-container <div>
+        for (i = 0; i < divClassInfo.length; i++) {
+      	  // Set all page divs to invisible
+      	  divClassInfo[i].style.display = "none";
+      	  
+      	  var current_btn_ID = "Button-" + parseInt(i);
+      	  // Set all tab buttons to w3-blue
+      	  document.getElementById(current_btn_ID).className = "w3-bar-item w3-button w3-round-large w3-hover-blue-grey w3-blue";
+        }
+  
+        // Set selected div to be visible
+        document.getElementById(tabName).style.display = "block";
+        
+        // Set selected button to w3-indigo
+        document.getElementById(btnID).className = "w3-bar-item w3-button w3-round-large w3-hover-blue-grey w3-indigo";
+      }
+	   
+      // This command only runs when page is first loaded. It sets the first tab button to be w3-indigo to show it as selected 
+      document.getElementById("Button-0").className = "w3-bar-item w3-button w3-round-large w3-hover-blue-grey w3-indigo";
+
+    </script>
+    
+	<!-- -------------------------------------------------------- -->
+    <!-- Grid ID from Lat/Lon  Tab/Div                            -->
+	<!-- Take a given Lat/Lon position and convert it into a grid -->
+	<!-- ID number.                                               -->
+    <div id="grid_ID_from_latlon" class="w3-container tab">
+      <script>
+    	function getGridIDFromLatLon() {
+    	  // Get the values of the input fields
+    	  let strLat = document.getElementById("latitude").value;
+    	  let strLon = document.getElementById("longitude").value;
+
+		  // Convert input fields from string to numeric type
+		  let numLat = Number(strLat);
+		  let numLon = Number(strLon);
+		  let formValid = true;
+
+		  // Determine if latitude input field is a not a valid number, not an umpty string or equal or greater than 90 
+		  if (isNaN(strLat) || strLat.trim().length === 0 || (Math.abs(numLat) >= 90)) {	
+			document.getElementById("latitude").style.background = "LightCoral"
+			formValid = false;
+		  } else {
+			document.getElementById("latitude").style.background = "white"
+		  }
+
+		  // Determine if longitude input field is a not a valid number, not an umpty string or equal or greater than 90
+		  if (isNaN(strLon) || strLon.trim().length === 0 || (Math.abs(numLat) >= 180)) {
+			document.getElementById("longitude").style.background = "LightCoral"
+			formValid = false;
+		  } else {
+			document.getElementById("longitude").style.background = "white"
+		  }
+
+		  // If both input fielsd are valid the calculate grid ID
+		  if (formValid === true) {
+
+			// Call the JSmaiden.js function lat_lon_to_Grid_ID with the form input field values as parameters
+    	    // Convert parameters from string to numeric value before calling JSmaiden lat_lon_to_Grid_ID.
+    	    var gridID = lat_lon_to_Grid_ID(numLat, numLon);
+      	
+    	    // Do something with the gridID, like display it on the page
+    	    document.getElementById("latlontogridID").innerHTML = gridID;
+		  } 
+    	}
+      </script>
+
+	  <!-- Form input -->
+	  <div class="w3-text-indigo">
+	    <h2>Grid ID from Lat/Lon</h2>
+	  </div>
+	  <form>
+	  	<label for="latitude">Latitude:</label>
+	  	<input type="text" id="latitude" name="latitude"><br><br>
+	  
+	  	<label for="longitude">Longitude:</label>
+	  	<input type="text" id="longitude" name="longitude"><br><br>
+	  
+	  	<input type="button" id="LatInput" value="Convert" onclick="getGridIDFromLatLon()">
+	  </form>
+	  <!-- Display calculated grid ID number -->
+	  <p>Grid ID: <span id="latlontogridID">AR09ax09AX</span></p>
+    </div>
+	
+    <!-- -------------------------------------------------------- -->
+    <!-- Distance and Azimuth (Lat/Lon)  Tab/Div                  -->
+	<!-- Take a start Lat/Lon and end Lat/lon and return the      -->
+	<!-- distance in km, miles and nautical miles and the initial -->
+	<!-- angle.                                                   -->
+    <div id="distance_and_azimuth_lat_lon" class="w3-container tab" style="display:none">
+      <script>
+      	function getDistanceAndAngleFromLatLon() {
+      	  // Get the values of the input fields
+      	  let strLatStart = document.getElementById("start_latitude").value;
+      	  let strLonStart = document.getElementById("start_longitude").value;
+      	  let strLatEnd = document.getElementById("end_latitude").value;
+      	  let strLonEnd = document.getElementById("end_longitude").value;  
+	  	  
+		  // Convert input fields from string to numeric type
+	  	  let numLatStart = Number(strLatStart);
+		  let numLonStart = Number(strLonStart);
+		  let numLatEnd = Number(strLatEnd);
+		  let numLonEnd = Number(strLonEnd);
+	      
+	      let formValid = true;
+
+		  // Determine if Start latitude input field is a not a valid number, not an umpty string or equal or greater than 90 
+		  if (isNaN(strLatStart) || strLatStart.trim().length === 0 || (Math.abs(numLatStart) >= 90)) {	
+			document.getElementById("start_latitude").style.background = "LightCoral"
+			formValid = false;
+		  } else {
+			document.getElementById("start_latitude").style.background = "white"
+		  }
+
+		  // Determine if Start longitude input field is a not a valid number, not an umpty string or equal or greater than 90
+		  if (isNaN(strLonStart) || strLonStart.trim().length === 0 || (Math.abs(numLonStart) >= 180)) {
+			document.getElementById("start_longitude").style.background = "LightCoral"
+			formValid = false;
+		  } else {
+			document.getElementById("start_longitude").style.background = "white"
+		  }
+
+          // Determine if End latitude input field is a not a valid number, not an umpty string or equal or greater than 90
+		  if (isNaN(strLatEnd) || strLatEnd.trim().length === 0 || (Math.abs(numLatEnd) >= 90)) {	
+			document.getElementById("end_latitude").style.background = "LightCoral"
+			formValid = false;
+		  } else {
+			document.getElementById("end_latitude").style.background = "white"
+		  }
+
+		  // Determine if End longitude input field is a not a valid number, not an umpty string or equal or greater than 90
+		  if (isNaN(strLonEnd) || strLonEnd.trim().length === 0 || (Math.abs(numLonEnd) >= 180)) {
+			document.getElementById("end_longitude").style.background = "LightCoral"
+			formValid = false;
+		  } else {
+			document.getElementById("end_longitude").style.background = "white"
+		  }
+
+		  if (formValid === true) {
+			// =============================
+      	    // Call the JSmaiden.js functions lat_lon_distance() and angle_from_coordinates()
+      	    let distance = lat_lon_distance(numLatStart, numLonStart, numLatEnd, numLonEnd);
+      	    let angle = angle_from_coordinates(numLatStart, numLonStart, numLatEnd, numLonEnd);
+      	    			
+      	    // Set distance and angle fields with calculated values
+      	    document.getElementById("lat_lon_dist_km").innerHTML = distance["km"];
+      	    document.getElementById("lat_lon_dist_sm").innerHTML = distance["smi"];
+      	    document.getElementById("lat_lon_dist_nm").innerHTML = distance["nmi"];
+      	    document.getElementById("lat_lon_angle").innerHTML = angle;
+		  } 	  
+      	}
+        </script>
+  
+        <div class="w3-text-indigo">
+          <h2>Distance and Azimuth (Lat/Lon)</h2>
+        </div>
+        <form>
+          <p>Start:</p>
+          <label for="slatitude">Latitude:</label>
+          <input type="text" id="start_latitude" name="start_latitude"><br><br>
+          <label for="slongitude">Longitude:</label>
+          <input type="text" id="start_longitude" name="start_longitude"><br><br>
+  
+          <p>End:</p>
+          <label for="elatitude">Latitude:</label>
+          <input type="text" id="end_latitude" name="end_latitude"><br><br>
+          <label for="elongitude">Longitude:</label>
+          <input type="text" id="end_longitude" name="end_longitude"><br><br>
+          <input type="button" value="Convert" onclick="getDistanceAndAngleFromLatLon()">
+        </form>
+
+        <p>Kilometers     : <span id="lat_lon_dist_km">0.0</span></p>
+        <p>Statute Miles  : <span id="lat_lon_dist_sm">0.0</span></p>
+        <p>Nautical Miles : <span id="lat_lon_dist_nm">0.0</span></p>
+        <p>Initial Angle   : <span id="lat_lon_angle">0</span></p>
+    </div>
+    
+	<!-- -------------------------------------------------------- -->
+    <!-- Distance and Azimuth (Grid) Tab/Div -->
+    <div id="distance_and_azimuth_grid_ID" class="w3-container tab" style="display:none">
+      <script>
+      	function getGridToDistanceAndAngle() {
+      	  // Get the values of the input fields
+      	  let strGridIDStart = document.getElementById("start_grid").value;
+      	  let strGridIDEnd = document.getElementById("end_grid").value;
+
+	  	  let formValid = true;
+
+		  if (grid_location_valid_ID(strGridIDStart)) {
+			document.getElementById("start_grid").style.background = "white"
+		  } else {
+			document.getElementById("start_grid").style.background = "LightCoral"
+			formValid = false;
+		  }
+
+		  if (grid_location_valid_ID(strGridIDEnd)) {
+			document.getElementById("end_grid").style.background = "white"
+		  } else {
+			document.getElementById("end_grid").style.background = "LightCoral"
+			formValid = false;
+		  }
+
+		  if (formValid === true) {
+		    // Call the JSmaiden.js functions grid_location_distance() and angle_from_grid_location_IDs()
+      	    var distance = grid_location_distance(strGridIDStart, strGridIDEnd);
+      	    var angle = angle_from_grid_location_IDs(strGridIDStart, strGridIDEnd);
+      	    			
+      	    // Display distances on the page tab
+      	    document.getElementById("grid_dist_km").innerHTML = distance["km"].toFixed(6);
+      	    document.getElementById("grid_dist_sm").innerHTML = distance["smi"].toFixed(6);
+      	    document.getElementById("grid_dist_nm").innerHTML = distance["nmi"].toFixed(6);
+      	    document.getElementById("grid_angle").innerHTML = angle;
+		  }
+      	}
+      </script>
+
+      <div class="w3-text-indigo">
+      <h2>Distance and Azimuth (Grid)</h2>
+      </div>
+      <form>
+      	<p>Start:</p>
+      	<label for="start_grid">Grid ID:</label>
+      	<input type="text" id="start_grid" name="start_grid"><br>
+      	<p>End:</p>
+      	<label for="end_grid">Grid ID:</label>
+      	<input type="text" id="end_grid" name="end_grid"><br><br>
+      	<input type="button" value="Convert" onclick="getGridToDistanceAndAngle()">
+      </form>
+      
+      <p>Kilometers     : <span id="grid_dist_km">0.0</span></p>
+      <p>Statute Miles  : <span id="grid_dist_sm">0.0</span></p>
+      <p>Nautical Miles : <span id="grid_dist_nm">0.0</span></p>
+      <p>Initial Angle   : <span id="grid_angle">0.0</span></p>
+    </div>
+    
+	<!-- -------------------------------------------------------- -->
+    <!-- Grid ID Size Tab/Div -->
+    <div id="grid_size" class="w3-container tab" style="display:none">
+	  <script>
+	    function getGridIDSize() {
+	    	let strGridSizeID = document.getElementById("grid_ID_size").value;
+  
+	      let formValid = true;
+	    	if (grid_location_valid_ID(strGridSizeID)) {
+	    	document.getElementById("grid_ID_size").style.background = "white"
+	    } else {
+	    	document.getElementById("grid_ID_size").style.background = "LightCoral"
+	    	formValid = false;
+	    }  
+	      if (formValid === true) {
+	  	  // Call the JSmaiden.js function grid_loc_size()
+	    	  let size = grid_loc_size(strGridSizeID);
+	      
+	    	  document.getElementById("sq_mi").innerHTML = size["sqmi"].toFixed(6);
+	    	  document.getElementById("sq_km").innerHTML = size["sqkm"].toFixed(6);
+	    	  document.getElementById("per_mi").innerHTML = size["permi"].toFixed(6);
+	    	  document.getElementById("per_km").innerHTML = size["perkm"].toFixed(6); 
+	    	  document.getElementById("ndist_mi").innerHTML = size["ndistmi"].toFixed(6);
+	    	  document.getElementById("ndist_km").innerHTML = size["ndistkm"].toFixed(6);
+	    	  document.getElementById("sdist_mi").innerHTML = size["sdistmi"].toFixed(6);
+	    	  document.getElementById("sdist_km").innerHTML = size["sdistkm"].toFixed(6);
+	    	  document.getElementById("ewdist_mi").innerHTML = size["ewdistmi"].toFixed(6);
+	    	  document.getElementById("ewdist_km").innerHTML = size["ewdistkm"].toFixed(6);
+	      } 			
+	    }
+	  </script>
+
+      <div class="w3-text-indigo">
+        <h2>Grid ID Size</h2>
+      </div>
+      <form>
+      	<label for="grid_ID_size">Grid ID:</label>
+      	<input type="text" id="grid_ID_size"><br><br>
+		<input type="button" value="Get Size" onclick="getGridIDSize()">
+      </form>
+
+      <h3>Area</h3>
+      <p>Square miles:<span id="sq_mi">0.0</span></p>
+      <p>Square kilometers: miles:<span id="sq_km">0.0</span></p>
+      <h3>Perimeter</h3>
+      <p>Miles: <span id="per_mi">0.0</span></p>
+      <p>Kilometers: <span id="per_km">0.0</span></p>
+      <h3>Sides</h3>
+      <p>North <span id="ndist_mi">0.0</span> miles <span id="ndist_km">0.0</span> kilometers</p>
+      <p>South <span id="sdist_mi">0.0</span> miles <span id="sdist_km">0.0</span> kilometers</p>
+      <p>East & West <span id="ewdist_mi">0.0</span> miles <span id="ewdist_km">0.0</span> kilometers</p>
+    
+    </div>
+    
+	<!-- -------------------------------------------------------- -->
+    <!-- Grid ID Boundary Tab/Div -->
+    <div id="grid_boundary" class="w3-container tab" style="display:none">
+      <script>
+      	function gridIDbounds() {
+  
+          let strGridBoundsID = document.getElementById("grid_ID_bounds").value;  
+	      let formValid = true;
+
+	      if (grid_location_valid_ID(strGridBoundsID)) {
+	      	document.getElementById("grid_ID_bounds").style.background = "white"
+	      } else {
+	      	document.getElementById("grid_ID_bounds").style.background = "LightCoral"
+	      	formValid = false;
+	      }
+
+		  if (formValid === true) {
+			let bounds = grid_location_ID_bounds(strGridBoundsID);
+	         
+            document.getElementById("NE_lat").innerHTML = bounds["NE"]["lat"].toFixed(6);
+            document.getElementById("NE_lon").innerHTML = bounds["NE"]["lon"].toFixed(6);
+            document.getElementById("SE_lat").innerHTML = bounds["SE"]["lat"].toFixed(6);
+            document.getElementById("SE_lon").innerHTML = bounds["SE"]["lon"].toFixed(6);
+            document.getElementById("SW_lat").innerHTML = bounds["SW"]["lat"].toFixed(6);
+            document.getElementById("SW_lon").innerHTML = bounds["SW"]["lon"].toFixed(6);
+            document.getElementById("NW_lat").innerHTML = bounds["NW"]["lat"].toFixed(6);
+            document.getElementById("NW_lon").innerHTML = bounds["NW"]["lon"].toFixed(6);
+            document.getElementById("CEN_lat").innerHTML = bounds["CEN"]["lat"].toFixed(6);
+            document.getElementById("CEN_lon").innerHTML = bounds["CEN"]["lon"].toFixed(6);
+		  }          
+      	}
+      </script>
+	  
+      <div class="w3-text-indigo">
+        <h2>Grid ID Boundary</h2>
+      </div>
+      <form>
+      	<label for="grid_ID_bounds">Grid ID:</label>
+      	<input type="text" id="grid_ID_bounds">
+      	<input type="button" value="Get Bounds" onclick="gridIDbounds()">
+      </form>
+      <p>North East - Lat: <span id="NE_lat">0.0</span> Lon: <span id="NE_lon">0.0</span></p>
+      <p>South East - Lat: <span id="SE_lat">0.0</span> Lon: <span id="SE_lon">0.0</span></p>
+      <p>South West - Lat: <span id="SW_lat">0.0</span> Lon: <span id="SW_lon">0.0</span></p>
+      <p>North West - Lat: <span id="NW_lat">0.0</span> Lon: <span id="NW_lon">0.0</span></p>
+      <p>Center - Lat: <span id="CEN_lat">0.0</span> Lon: <span id="CEN_lon">0.0</span></p>
+    </div>
+  </body>
+</html>
